@@ -1,1 +1,1 @@
-/home/swy/git/opencl/matrix_mul/build/CMakeFiles/MatrixMul.dir
+/home/wing/git/opencl/matrix_mul/build/CMakeFiles/MatrixMul.dir

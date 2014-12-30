@@ -35,10 +35,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/swy/git/opencl/matrix_mul
+CMAKE_SOURCE_DIR = /home/wing/git/opencl/matrix_mul
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/swy/git/opencl/matrix_mul/build
+CMAKE_BINARY_DIR = /home/wing/git/opencl/matrix_mul/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/MatrixMul.dir/depend.make
@@ -51,17 +51,17 @@ include CMakeFiles/MatrixMul.dir/flags.make
 
 CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o: CMakeFiles/MatrixMul.dir/flags.make
 CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o: ../MatrixMul.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/swy/git/opencl/matrix_mul/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/wing/git/opencl/matrix_mul/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o -c /home/swy/git/opencl/matrix_mul/MatrixMul.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o -c /home/wing/git/opencl/matrix_mul/MatrixMul.cpp
 
 CMakeFiles/MatrixMul.dir/MatrixMul.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MatrixMul.dir/MatrixMul.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/swy/git/opencl/matrix_mul/MatrixMul.cpp > CMakeFiles/MatrixMul.dir/MatrixMul.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/wing/git/opencl/matrix_mul/MatrixMul.cpp > CMakeFiles/MatrixMul.dir/MatrixMul.cpp.i
 
 CMakeFiles/MatrixMul.dir/MatrixMul.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MatrixMul.dir/MatrixMul.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/swy/git/opencl/matrix_mul/MatrixMul.cpp -o CMakeFiles/MatrixMul.dir/MatrixMul.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/wing/git/opencl/matrix_mul/MatrixMul.cpp -o CMakeFiles/MatrixMul.dir/MatrixMul.cpp.s
 
 CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o.requires:
 .PHONY : CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o.requires
@@ -98,6 +98,6 @@ CMakeFiles/MatrixMul.dir/clean:
 .PHONY : CMakeFiles/MatrixMul.dir/clean
 
 CMakeFiles/MatrixMul.dir/depend:
-	cd /home/swy/git/opencl/matrix_mul/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/swy/git/opencl/matrix_mul /home/swy/git/opencl/matrix_mul /home/swy/git/opencl/matrix_mul/build /home/swy/git/opencl/matrix_mul/build /home/swy/git/opencl/matrix_mul/build/CMakeFiles/MatrixMul.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/wing/git/opencl/matrix_mul/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/wing/git/opencl/matrix_mul /home/wing/git/opencl/matrix_mul /home/wing/git/opencl/matrix_mul/build /home/wing/git/opencl/matrix_mul/build /home/wing/git/opencl/matrix_mul/build/CMakeFiles/MatrixMul.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/MatrixMul.dir/depend
 

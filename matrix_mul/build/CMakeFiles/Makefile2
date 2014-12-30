@@ -47,10 +47,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/swy/git/opencl/matrix_mul
+CMAKE_SOURCE_DIR = /home/wing/git/opencl/matrix_mul
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/swy/git/opencl/matrix_mul/build
+CMAKE_BINARY_DIR = /home/wing/git/opencl/matrix_mul/build
 
 #=============================================================================
 # Target rules for target CMakeFiles/MatrixMul.dir
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /home/swy/git/opencl/matrix_mul/build
 CMakeFiles/MatrixMul.dir/all:
 	$(MAKE) -f CMakeFiles/MatrixMul.dir/build.make CMakeFiles/MatrixMul.dir/depend
 	$(MAKE) -f CMakeFiles/MatrixMul.dir/build.make CMakeFiles/MatrixMul.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/swy/git/opencl/matrix_mul/build/CMakeFiles  1
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/wing/git/opencl/matrix_mul/build/CMakeFiles  1
 	@echo "Built target MatrixMul"
 .PHONY : CMakeFiles/MatrixMul.dir/all
 
@@ -69,9 +69,9 @@ all: CMakeFiles/MatrixMul.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MatrixMul.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/swy/git/opencl/matrix_mul/build/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wing/git/opencl/matrix_mul/build/CMakeFiles 1
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/MatrixMul.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/swy/git/opencl/matrix_mul/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/wing/git/opencl/matrix_mul/build/CMakeFiles 0
 .PHONY : CMakeFiles/MatrixMul.dir/rule
 
 # Convenience name for target.

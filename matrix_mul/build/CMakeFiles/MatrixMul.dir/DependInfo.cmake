@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/swy/git/opencl/matrix_mul/MatrixMul.cpp" "/home/swy/git/opencl/matrix_mul/build/CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o"
+  "/home/wing/git/opencl/matrix_mul/MatrixMul.cpp" "/home/wing/git/opencl/matrix_mul/build/CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

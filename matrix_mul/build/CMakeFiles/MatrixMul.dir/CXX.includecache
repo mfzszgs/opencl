@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/swy/git/opencl/matrix_mul/MatrixMul.cpp
+/home/wing/git/opencl/matrix_mul/MatrixMul.cpp
 stdio.h
 -
 OpenCL/cl.h

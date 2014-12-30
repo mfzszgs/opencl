@@ -10,5 +10,3 @@ include_directories( "${CMAKE_SOURCE_DIR}/khronos" )
 
 add_executable(MatrixMul  MatrixMul.cpp )
 target_link_libraries( MatrixMul ${OPENCL_LIBRARIES} )
-
-configure_file(MatrixMul.cl ${CMAKE_CURRENT_BINARY_DIR}/MatrixMul.cl COPYONLY)
