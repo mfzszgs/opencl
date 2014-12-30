@@ -1,335 +1,202 @@
-//
-// Book:      OpenCL(R) Programming Guide
-// Authors:   Aaftab Munshi, Benedict Gaster, Timothy Mattson, James Fung, Dan Ginsburg
-// ISBN-10:   0-321-74964-2
-// ISBN-13:   978-0-321-74964-2
-// Publisher: Addison-Wesley Professional
-// URLs:      http://safari.informit.com/9780132488006/
-//            http://www.openclprogrammingguide.com
-//
-
-// HelloWorld.cpp
-//
-//    This is a simple example that demonstrates basic OpenCL setup and
-//    use.
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
+#include<stdio.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
+#define ORDER 2
+#define DIM 2
 
-///
-//  Constants
-//
-const int ARRAY_SIZE = 1000;
 
-///
-//  Create an OpenCL context on the first available platform using
-//  either a GPU or CPU depending on what is available.
-//
-cl_context CreateContext()
+
+const char *C_elem_KernelSource = "\n"\
+"__kernel void mmul(const int Mdim, const int Ndim, const int Pdim, __global float *A, __global float *B, __global float*C) \n"\
+"{\n"\
+"	int k;\n"\
+"	int i = get_global_id(0);\n"\
+"	int j = get_global_id(1);\n"\
+"	float tmp;\n"\
+"	if ((i<Ndim) && (j<Mdim))\n"\
+"	{\n"\
+"		tmp = 0.0;\n"\
+"		for (k = 0; k<Pdim; k++)\n"\
+"			tmp += A[i*Pdim + k] * B[k*Mdim + j];\n"\
+"		C[i*Mdim + j] = tmp;\n"\
+"	}\n"\
+"}\n"\
+"\n";
+
+/*
+cl_program CreateProgram(cl_context context, const char* fileName)
 {
-    cl_int errNum;
-    cl_uint numPlatforms;
-    cl_platform_id firstPlatformId;
-    cl_context context = NULL;
+	cl_int errNum;
+	cl_program program;
 
-    // First, select an OpenCL platform to run on.  For this example, we
-    // simply choose the first available platform.  Normally, you would
-    // query for all available platforms and select the most appropriate one.
-    errNum = clGetPlatformIDs(1, &firstPlatformId, &numPlatforms);
-    if (errNum != CL_SUCCESS || numPlatforms <= 0)
-    {
-        std::cerr << "Failed to find any OpenCL platforms." << std::endl;
-        return NULL;
-    }
+	std::ifstream kernelFile(fileName, std::ios::in);
+	if (!kernelFile.is_open())
+	{
+		std::cerr << "Failed to open file for reading: " << fileName << std::endl;
+		return NULL;
+	}
 
-    // Next, create an OpenCL context on the platform.  Attempt to
-    // create a GPU-based context, and if that fails, try to create
-    // a CPU-based context.
-    cl_context_properties contextProperties[] =
-    {
-        CL_CONTEXT_PLATFORM,
-        (cl_context_properties)firstPlatformId,
-        0
-    };
-    context = clCreateContextFromType(contextProperties, CL_DEVICE_TYPE_GPU,
-                                      NULL, NULL, &errNum);
-    if (errNum != CL_SUCCESS)
-    {
-        std::cout << "Could not create GPU context, trying CPU..." << std::endl;
-        context = clCreateContextFromType(contextProperties, CL_DEVICE_TYPE_CPU,
-                                          NULL, NULL, &errNum);
-        if (errNum != CL_SUCCESS)
-        {
-            std::cerr << "Failed to create an OpenCL GPU or CPU context." << std::endl;
-            return NULL;
-        }
-    }
+	std::ostringstream oss;
+	oss << kernelFile.rdbuf();
 
-    return context;
+	std::string srcStdStr = oss.str();
+	const char *srcStr = srcStdStr.c_str();
+	program = clCreateProgramWithSource(context, 1,
+		(const char**)&srcStr,
+		NULL, NULL);
+	if (program == NULL)
+	{
+		std::cerr << "Failed to create CL program from source." << std::endl;
+		return NULL;
+	}
+
+	errNum = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+	if (errNum != CL_SUCCESS)
+	{
+		// Determine the reason for the error
+		char buildLog[16384];
+		std::cerr << "Error in kernel: " << std::endl;
+		std::cerr << buildLog;
+		clReleaseProgram(program);
+		return NULL;
+	}
+
+	return program;
 }
 
-///
-//  Create a command queue on the first device available on the
-//  context
-//
-cl_command_queue CreateCommandQueue(cl_context context, cl_device_id *device)
-{
-    cl_int errNum;
-    cl_device_id *devices;
-    cl_command_queue commandQueue = NULL;
-    size_t deviceBufferSize = -1;
-
-    // First get the size of the devices buffer
-    errNum = clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, NULL, &deviceBufferSize);
-    if (errNum != CL_SUCCESS)
-    {
-        std::cerr << "Failed call to clGetContextInfo(...,GL_CONTEXT_DEVICES,...)";
-        return NULL;
-    }
-
-    if (deviceBufferSize <= 0)
-    {
-        std::cerr << "No devices available.";
-        return NULL;
-    }
-
-    // Allocate memory for the devices buffer
-    devices = new cl_device_id[deviceBufferSize / sizeof(cl_device_id)];
-    errNum = clGetContextInfo(context, CL_CONTEXT_DEVICES, deviceBufferSize, devices, NULL);
-    if (errNum != CL_SUCCESS)
-    {
-        delete [] devices;
-        std::cerr << "Failed to get device IDs";
-        return NULL;
-    }
-
-    // In this example, we just choose the first available device.  In a
-    // real program, you would likely use all available devices or choose
-    // the highest performance device based on OpenCL device queries
-    commandQueue = clCreateCommandQueue(context, devices[0], 0, NULL);
-    if (commandQueue == NULL)
-    {
-        delete [] devices;
-        std::cerr << "Failed to create commandQueue for device 0";
-        return NULL;
-    }
-
-    *device = devices[0];
-    delete [] devices;
-    return commandQueue;
+*/
+/*
+void output(float *F){
+	for (int r = 0; r < 8; r++)
+		std::cout << F[r] << std::endl;
 }
-
-///
-//  Create an OpenCL program from the kernel source file
-//
-cl_program CreateProgram(cl_context context, cl_device_id device, const char* fileName)
+*/
+int mul(float *A,float *B,float *C,int Mdim, int Ndim, int Pdim)
 {
-    cl_int errNum;
-    cl_program program;
+	
+	int err;
+	int szA, szB, szC;
+	size_t global[DIM];
+	size_t local[DIM];
+	cl_device_id device_id;
+	cl_context context;
+	cl_command_queue commands;
+	cl_program program;
+	cl_kernel kernel;
+	cl_uint nd;
+	cl_mem a_in;
+	cl_mem b_in;
+	cl_mem c_out;
+	int i;
 
-    std::ifstream kernelFile(fileName, std::ios::in);
-    if (!kernelFile.is_open())
-    {
-        std::cerr << "Failed to open file for reading: " << fileName << std::endl;
-        return NULL;
-    }
+	cl_uint numPlatforms;
+	cl_platform_id firstPlatformId;
+	err = clGetPlatformIDs(1, &firstPlatformId, &numPlatforms);
+	err = clGetDeviceIDs(firstPlatformId, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL);
+	cl_context_properties properties[] =
+	{
+		CL_CONTEXT_PLATFORM, (cl_context_properties)firstPlatformId, 0
+	};
+	context = clCreateContext(properties, 1, &device_id, NULL, NULL, &err);
+	commands = clCreateCommandQueue(context, device_id, CL_QUEUE_PROFILING_ENABLE, &err);
+	szA = Ndim*Pdim; szB = Pdim*Mdim; szC = Ndim*Mdim;
+	
+	//initmat
 
-    std::ostringstream oss;
-    oss << kernelFile.rdbuf();
+	
+	//initmat
+	a_in = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(float)*szA, NULL, NULL);
+	b_in = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(float)*szB, NULL, NULL);
+	c_out = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float)*szC, NULL, NULL);
 
-    std::string srcStdStr = oss.str();
-    const char *srcStr = srcStdStr.c_str();
-    program = clCreateProgramWithSource(context, 1,
-                                        (const char**)&srcStr,
-                                        NULL, NULL);
-    if (program == NULL)
-    {
-        std::cerr << "Failed to create CL program from source." << std::endl;
-        return NULL;
-    }
+	//program
 
-    errNum = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
-    if (errNum != CL_SUCCESS)
-    {
-        // Determine the reason for the error
-        char buildLog[16384];
-        clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG,
-                              sizeof(buildLog), buildLog, NULL);
+//set the program like the helloword
+	/*
+	program = CreateProgram(context, "mulm.cl");
+	if (program == NULL)
+	{
+	//	Cleanup(context, commandQueue, program, kernel, memObjects);
+		return 1;
+	}
+	*/
 
-        std::cerr << "Error in kernel: " << std::endl;
-        std::cerr << buildLog;
-        clReleaseProgram(program);
-        return NULL;
-    }
+//set the program deault
+	program = clCreateProgramWithSource(context, 1, (const char**)& C_elem_KernelSource, NULL, &err);
+	err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+	if (err != CL_SUCCESS)
+	{
+		size_t len;
+		char buffer[2048];
+		printf("Error:Failed to build program executable!\n");
+		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
+		printf("%s\n", buffer);
+		return CL_FALSE;
+	}
 
-    return program;
-}
+	
+	//kernel
+	kernel = clCreateKernel(program, "mmul", &err);
+	err = 0;
+	err = clSetKernelArg(kernel, 0, sizeof(int), &Mdim);
+	err |= clSetKernelArg(kernel, 1, sizeof(int), &Ndim);
+	err |= clSetKernelArg(kernel, 2, sizeof(int), &Pdim);
+	err |= clSetKernelArg(kernel, 3, sizeof(cl_mem), &a_in);
+	err |= clSetKernelArg(kernel, 4, sizeof(cl_mem), &b_in);
+	err |= clSetKernelArg(kernel, 5, sizeof(cl_mem), &c_out);
 
-///
-//  Create memory objects used as the arguments to the kernel
-//  The kernel takes three arguments: result (output), a (input),
-//  and b (input)
-//
-bool CreateMemObjects(cl_context context, cl_mem memObjects[3],
-                      float *a, float *b)
-{
-    memObjects[0] = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                   sizeof(float) * ARRAY_SIZE, a, NULL);
-    memObjects[1] = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                                   sizeof(float) * ARRAY_SIZE, b, NULL);
-    memObjects[2] = clCreateBuffer(context, CL_MEM_READ_WRITE,
-                                   sizeof(float) * ARRAY_SIZE, NULL, NULL);
+	err = clEnqueueWriteBuffer(commands, a_in, CL_TRUE, 0, sizeof(float)*szA, A, 0, NULL, NULL);
+	err = clEnqueueWriteBuffer(commands, b_in, CL_TRUE, 0, sizeof(float)*szB, B, 0, NULL, NULL);
+	cl_event prof_event;
 
-    if (memObjects[0] == NULL || memObjects[1] == NULL || memObjects[2] == NULL)
-    {
-        std::cerr << "Error creating memory objects." << std::endl;
-        return false;
-    }
+	global[0] = (size_t)Ndim; global[1] = (size_t)Mdim; nd = 2;
+	err = clEnqueueNDRangeKernel(commands, kernel, nd, NULL, global, NULL, 0, NULL, &prof_event);
+	clFinish(commands);
 
-    return true;
-}
+	cl_ulong ev_start_time = (cl_ulong)0;
+	cl_ulong ev_end_time = (cl_ulong)0;
+	size_t ret_size;
 
-///
-//  Cleanup any created OpenCL resources
-//
-void Cleanup(cl_context context, cl_command_queue commandQueue,
-             cl_program program, cl_kernel kernel, cl_mem memObjects[3])
-{
-    for (int i = 0; i < 3; i++)
-    {
-        if (memObjects[i] != 0)
-            clReleaseMemObject(memObjects[i]);
-    }
-    if (commandQueue != 0)
-        clReleaseCommandQueue(commandQueue);
+	err = clGetEventProfilingInfo(prof_event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &ev_start_time, NULL);
+	err = clGetEventProfilingInfo(prof_event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &ev_start_time, NULL);
 
-    if (kernel != 0)
-        clReleaseKernel(kernel);
+	err = clEnqueueReadBuffer(commands, c_out, CL_TRUE, 0, sizeof(float)*szC, C, 0, NULL, NULL);
 
-    if (program != 0)
-        clReleaseProgram(program);
-
-    if (context != 0)
-        clReleaseContext(context);
+	clReleaseProgram(program);
+	clReleaseKernel(kernel);
+	clReleaseMemObject(a_in);
+	clReleaseMemObject(b_in);
+	clReleaseMemObject(c_out);
+	clReleaseCommandQueue(commands);
+	clReleaseContext(context);
 
 }
 
-///
-//	main() for HelloWorld example
-//
-int main(int argc, char** argv)
+
+int main(int argc, char **argv)
 {
-    cl_context context = 0;
-    cl_command_queue commandQueue = 0;
-    cl_program program = 0;
-    cl_device_id device = 0;
-    cl_kernel kernel = 0;
-    cl_mem memObjects[3] = { 0, 0, 0 };
-    cl_int errNum;
-
-    // Create an OpenCL context on first available platform
-    context = CreateContext();
-    if (context == NULL)
-    {
-        std::cerr << "Failed to create OpenCL context." << std::endl;
-        return 1;
-    }
-
-    // Create a command-queue on the first device available
-    // on the created context
-    commandQueue = CreateCommandQueue(context, &device);
-    if (commandQueue == NULL)
-    {
-        Cleanup(context, commandQueue, program, kernel, memObjects);
-        return 1;
-    }
-
-    // Create OpenCL program from HelloWorld.cl kernel source
-    program = CreateProgram(context, device, "MatrixMul.cl");
-    if (program == NULL)
-    {
-        Cleanup(context, commandQueue, program, kernel, memObjects);
-        return 1;
-    }
-
-    // Create OpenCL kernel
-    kernel = clCreateKernel(program, "hello_kernel", NULL);
-    if (kernel == NULL)
-    {
-        std::cerr << "Failed to create kernel" << std::endl;
-        Cleanup(context, commandQueue, program, kernel, memObjects);
-        return 1;
-    }
-
-    // Create memory objects that will be used as arguments to
-    // kernel.  First create host memory arrays that will be
-    // used to store the arguments to the kernel
-    float result[ARRAY_SIZE];
-    float a[ARRAY_SIZE];
-    float b[ARRAY_SIZE];
-    for (int i = 0; i < ARRAY_SIZE; i++)
-    {
-        a[i] = (float)i;
-        b[i] = (float)(i * 2);
-    }
-
-    if (!CreateMemObjects(context, memObjects, a, b))
-    {
-        Cleanup(context, commandQueue, program, kernel, memObjects);
-        return 1;
-    }
-
-    // Set the kernel arguments (result, a, b)
-    errNum = clSetKernelArg(kernel, 0, sizeof(cl_mem), &memObjects[0]);
-    errNum |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &memObjects[1]);
-    errNum |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &memObjects[2]);
-    if (errNum != CL_SUCCESS)
-    {
-        std::cerr << "Error setting kernel arguments." << std::endl;
-        Cleanup(context, commandQueue, program, kernel, memObjects);
-        return 1;
-    }
-
-    size_t globalWorkSize[1] = { ARRAY_SIZE };
-    size_t localWorkSize[1] = { 1 };
-
-    // Queue the kernel up for execution across the array
-    errNum = clEnqueueNDRangeKernel(commandQueue, kernel, 1, NULL,
-                                    globalWorkSize, localWorkSize,
-                                    0, NULL, NULL);
-    if (errNum != CL_SUCCESS)
-    {
-        std::cerr << "Error queuing kernel for execution." << std::endl;
-        Cleanup(context, commandQueue, program, kernel, memObjects);
-        return 1;
-    }
-
-    // Read the output buffer back to the Host
-    errNum = clEnqueueReadBuffer(commandQueue, memObjects[2], CL_TRUE,
-                                 0, ARRAY_SIZE * sizeof(float), result,
-                                 0, NULL, NULL);
-    if (errNum != CL_SUCCESS)
-    {
-        std::cerr << "Error reading result buffer." << std::endl;
-        Cleanup(context, commandQueue, program, kernel, memObjects);
-        return 1;
-    }
-
-    // Output the result buffer
-    for (int i = 0; i < ARRAY_SIZE; i++)
-    {
-        std::cout << result[i] << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "Executed program succesfully." << std::endl;
-    Cleanup(context, commandQueue, program, kernel, memObjects);
-
-    return 0;
+	float *A;
+	float *B;
+	float *C;
+	int Mdim, Ndim, Pdim;
+	//initialize
+	Ndim = 2; 
+	Pdim = 3; 
+	Mdim = 4;
+	A = (float*)malloc(sizeof(float)*Ndim*Pdim);
+	B = (float*)malloc(sizeof(float)*Pdim*Mdim);
+	C = (float*)malloc(sizeof(float)*Ndim*Mdim);
+	for(int i=1;i<Ndim*Pdim;i++)
+	{
+		A[i]=i+1;
+	}
+	for(int i=1;i<Mdim*Pdim;i++)
+	{
+		B[i]=i+1;
+	}
+	mul(A, B, C, Mdim, Ndim, Pdim);
+//	output(C);
 }
