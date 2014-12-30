@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/swy/git/opencl/matrix_mul/MatrixMul.cpp
+iostream
+-
+fstream
+-
+sstream
+-
+OpenCL/cl.h
+-
+CL/cl.h
+-
+

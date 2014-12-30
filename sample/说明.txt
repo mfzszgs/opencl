@@ -1,0 +1,6 @@
+使用SVN下载源码：
+SVN 地址：
+http://opencl-book-samples.googlecode.com/svn/trunk
+
+
+使用CMAKE 工具编译，生成对应工程文件

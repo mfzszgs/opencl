@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/MatrixMul.dir/MatrixMul.cpp.o  -o MatrixMul -rdynamic -lOpenCL 
