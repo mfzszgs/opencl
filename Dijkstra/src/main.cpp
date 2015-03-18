@@ -3,7 +3,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #define random(x) (rand()%x)
-#define FLT 1000
+#define FLT 100
 
 
 void selectSort(int arr[], int len) {

@@ -44,7 +44,7 @@ all: VectorAdd
 VectorAdd: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross G++ Linker'
-	g++ -L/usr/local/cuda-6.5/lib64 -o "VectorAdd" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/usr/local/cuda/lib64 -o "VectorAdd" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
