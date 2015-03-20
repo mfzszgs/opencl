@@ -4,13 +4,8 @@
  *  Created on: Mar 10, 2015
  *      Author: wing
  */
-#include<cl_create.h>
+#include"cl_create.h"
 #include<stdio.h>
-#ifdef __APPLE__
-#include <OpenCL/cl.h>
-#else
-#include <CL/cl.h>
-#endif
 
 ///
 //  Create an OpenCL context on the first available platform using

@@ -1,17 +1,17 @@
-#include"matrix_mul.h"
+#include"cl_matrix.h"
 
 int main(int argc, char **argv) {
-	float *A;
-	float *B;
-	float *C;
+	int*A;
+	int*B;
+	int*C;
 	int Mdim, Ndim, Pdim;
 	//initialize
 	Ndim = 2;
 	Pdim = 3;
 	Mdim = 4;
-	A = (float*) malloc(sizeof(float) * Ndim * Pdim);
-	B = (float*) malloc(sizeof(float) * Pdim * Mdim);
-	C = (float*) malloc(sizeof(float) * Ndim * Mdim);
+	A = (int*) malloc(sizeof(int) * Ndim * Pdim);
+	B = (int*) malloc(sizeof(int) * Pdim * Mdim);
+	C = (int*) malloc(sizeof(int) * Ndim * Mdim);
 	for (int i = 1; i < Ndim * Pdim; i++) {
 		A[i] = i + 1;
 	}
@@ -19,5 +19,4 @@ int main(int argc, char **argv) {
 		B[i] = i + 1;
 	}
 	mul(A, B, C, Mdim, Ndim, Pdim,CL_DEVICE_TYPE_GPU);
-//	output(C);
 }

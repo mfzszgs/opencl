@@ -7,6 +7,11 @@
 #ifndef CL_CREATE_H_
 #define CL_CREATE_H_
 ///
+#ifdef __APPLE__
+#include <OpenCL/cl.h>
+#else
+#include <CL/cl.h>
+#endif
 //  Create an OpenCL context on the first available platform using
 //  either a GPU or CPU depending on what is available.
 //

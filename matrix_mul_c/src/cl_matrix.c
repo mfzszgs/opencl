@@ -1,33 +1,11 @@
-#include<stdio.h>
-#include"cl_create.h"
-
-#define ORDER 2
-#define DIM 2
-
-const char *C_elem_KernelSource =
-		"\n"
-				"__kernel void mmul(const int Mdim, const int Ndim, const int Pdim, __global float *A, __global float *B, __global float*C) \n"
-				"{\n"
-				"	int k;\n"
-				"	int i = get_global_id(0);\n"
-				"	int j = get_global_id(1);\n"
-				"	float tmp;\n"
-				"	if ((i<Ndim) && (j<Mdim))\n"
-				"	{\n"
-				"		tmp = 0.0;\n"
-				"		for (k = 0; k<Pdim; k++)\n"
-				"			tmp += A[i*Pdim + k] * B[k*Mdim + j];\n"
-				"		C[i*Mdim + j] = tmp;\n"
-				"	}\n"
-				"}\n"
-				"\n";
+#include"cl_matrix.h"
 const char *srcStr=
-"__kernel void matrix_mul(const int Mdim, const int Ndim, const int Pdim, __global float *A, __global float *B, __global float*C)\n"
+"__kernel void matrix_mul(const int Mdim, const int Ndim, const int Pdim, __global int *A, __global int *B, __global int*C)\n"
 "{\n"
     "int k;\n"
     "int i = get_global_id(0);\n"
     "int j = get_global_id(1);\n"
-    "float tmp;\n"
+    "int tmp;\n"
     "if ((i<Ndim) && (j<Mdim))\n"
     "{\n"
         "tmp = 0.0;\n"
@@ -38,7 +16,7 @@ const char *srcStr=
 "}\n"
 "\n";
 
-int mul(float *A, float *B, float *C, int Mdim, int Ndim, int Pdim,
+int mul(int*A, int*B, int*C, int Mdim, int Ndim, int Pdim,
 		cl_device_type device_type) {
 
 	int err;
@@ -64,11 +42,11 @@ int mul(float *A, float *B, float *C, int Mdim, int Ndim, int Pdim,
 	szC = Ndim * Mdim;
 
 	//initmat
-	a_in = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(float) * szA, NULL,
+	a_in = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int) * szA, NULL,
 	NULL);
-	b_in = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(float) * szB, NULL,
+	b_in = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int) * szB, NULL,
 	NULL);
-	c_out = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * szC,
+	c_out = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(int) * szC,
 	NULL, NULL);
 
 
@@ -85,9 +63,9 @@ int mul(float *A, float *B, float *C, int Mdim, int Ndim, int Pdim,
 	err |= clSetKernelArg(kernel, 4, sizeof(cl_mem), &b_in);
 	err |= clSetKernelArg(kernel, 5, sizeof(cl_mem), &c_out);
 
-	err = clEnqueueWriteBuffer(commands, a_in, CL_TRUE, 0, sizeof(float) * szA,
+	err = clEnqueueWriteBuffer(commands, a_in, CL_TRUE, 0, sizeof(int) * szA,
 			A, 0, NULL, NULL);
-	err = clEnqueueWriteBuffer(commands, b_in, CL_TRUE, 0, sizeof(float) * szB,
+	err = clEnqueueWriteBuffer(commands, b_in, CL_TRUE, 0, sizeof(int) * szB,
 			B, 0, NULL, NULL);
 	cl_event prof_event;
 
@@ -107,7 +85,7 @@ int mul(float *A, float *B, float *C, int Mdim, int Ndim, int Pdim,
 	err = clGetEventProfilingInfo(prof_event, CL_PROFILING_COMMAND_END,
 			sizeof(cl_ulong), &ev_end_time, NULL);
 	printf("time:%d\n",ev_end_time-ev_start_time);
-	err = clEnqueueReadBuffer(commands, c_out, CL_TRUE, 0, sizeof(float) * szC,
+	err = clEnqueueReadBuffer(commands, c_out, CL_TRUE, 0, sizeof(int) * szC,
 			C, 0, NULL, NULL);
 
 	clReleaseProgram(program);

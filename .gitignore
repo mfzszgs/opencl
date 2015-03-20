@@ -1,3 +1,4 @@
-/RemoteSystemsTempFiles
-/.metadata
-
+RemoteSystemsTempFiles
+.metadata
+.cproject
+.project
